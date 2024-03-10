@@ -303,7 +303,7 @@ app.put('/api/update/notes/:id', isAuthenticated, (req, res) => {
 
 // Заглушка для корневого маршрута
 app.get('/', (req, res) => {
-  res.send('Добро пожаловать на сервер. Для доступа к API перейдите по соответствующим маршрутам.');
+  res.send('Добро пожаловать на сервер. Для доступа к API перейдите по соответствующим маршрутам. backend version: v.0.0.1');
 });
 
 app.post('/logout', (req, res) => {
