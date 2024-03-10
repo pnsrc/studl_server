@@ -182,6 +182,35 @@ app.post('/api/add/note', upload.single('attachment'), (req, res) => {
   });
 });
 
+// Обновление информации о пользователе
+app.put('/api/user.update', isAuthenticated, async (req, res) => {
+  const { fullName, idGroup } = req.body;
+  const userId = req.user.id;
+
+  try {
+    // Обновляем информацию о пользователе
+    await updateUser(userId, fullName, idGroup);
+    res.status(200).json({ message: 'Информация о пользователе успешно обновлена' });
+  } catch (err) {
+    console.error('Ошибка обновления информации о пользователе:', err);
+    res.status(500).json({ error: 'Ошибка обновления информации о пользователе' });
+  }
+});
+
+// Функция для обновления информации о пользователе
+const updateUser = (userId, fullName, idGroup) => {
+  return new Promise((resolve, reject) => {
+    db.run('UPDATE users SET full_name = ?, id_group = ? WHERE id = ?', [fullName, idGroup, userId], function(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
+
 // Функция для получения пользователя по токену
 const getUserByToken = (token) => {
   return new Promise((resolve, reject) => {
