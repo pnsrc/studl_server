@@ -26,7 +26,7 @@ db.serialize(() => {
 
 // Создание таблицы заметок, если ее нет
 db.serialize(() => {
-  db.run('CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, guid TEXT, note TEXT, attachment TEXT)');
+  db.run('CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY, guid TEXT, note TEXT, attachment TEXT, userId INTEGER)');
 });
 
 // Инициализация express-session
@@ -173,7 +173,7 @@ app.post('/api/add/note', upload.single('attachment'), (req, res) => {
     return res.status(400).json({ error: 'Необходимо указать guid и note' });
   }
 
-  db.run('INSERT INTO notes (guid, note, attachment) VALUES (?, ?, ?)', [guid, note, attachment], function(err) {
+  db.run('INSERT INTO notes (guid, note, attachment, userId) VALUES (?, ?, ?, ?)', [guid, note, attachment, req.user.id], function(err) {
     if (err) {
       console.error('Ошибка добавления заметки:', err);
       return res.status(500).json({ error: 'Ошибка добавления заметки' });
@@ -224,16 +224,12 @@ const getUserByUsername = (username) => {
   });
 };
 
-
+// Получение информации о текущем пользователе
 app.get('/api/test_in', isAuthenticated, (req, res) => {
   res.status(200).json({ user: req.user });
 });
 
-// Заглушка для корневого маршрута
-app.get('/', (req, res) => {
-  res.send('Тут пусто, и так оно и должно быть, если ты искал что-то конкретное, то давай я тебе помогу. <a href="https://www.google.com/search?q=%D0%BA%D0%B0%D0%BA+%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D1%8C+%D1%87%D1%82%D0%BE+%D1%8F+%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B0+%D0%BF%D1%80%D0%B8%D1%80%D0%BE%D0%B4%D1%8B">Милые котята жать сюда</a> жми сюда и ищи что нужно');
-});
-
+// Получение всех заметок текущего пользователя
 app.get('/api/get.all/note', isAuthenticated, (req, res) => {
   const userId = req.user.id;
   db.all('SELECT * FROM notes WHERE userId = ?', [userId], (err, rows) => {
@@ -276,6 +272,10 @@ app.put('/api/update/notes/:id', isAuthenticated, (req, res) => {
   });
 });
 
+// Заглушка для корневого маршрута
+app.get('/', (req, res) => {
+  res.send('Добро пожаловать на сервер. Для доступа к API перейдите по соответствующим маршрутам.');
+});
 
 app.listen(PORT, () => {
   console.log(`Сервер запущен на порту ${PORT}`);
