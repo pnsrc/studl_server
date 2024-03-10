@@ -229,6 +229,11 @@ app.get('/api/test_in', isAuthenticated, (req, res) => {
   res.status(200).json({ user: req.user });
 });
 
+// Заглушка для корневого маршрута
+app.get('/', (req, res) => {
+  res.send('Тут пусто, и так оно и должно быть, если ты искал что-то конкретное, то давай я тебе помогу. <a href="https://www.google.com/search?q=%D0%BA%D0%B0%D0%BA+%D0%BF%D0%BE%D0%BD%D1%8F%D1%82%D1%8C+%D1%87%D1%82%D0%BE+%D1%8F+%D0%BE%D1%88%D0%B8%D0%B1%D0%BA%D0%B0+%D0%BF%D1%80%D0%B8%D1%80%D0%BE%D0%B4%D1%8B">Милые котята жать сюда</a> жми сюда и ищи что нужно');
+});
+
 // Получение всех заметок текущего пользователя
 app.get('/api/get.all/note', isAuthenticated, (req, res) => {
   const userId = req.user.id;

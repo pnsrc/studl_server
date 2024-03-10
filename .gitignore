@@ -12,6 +12,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 #db ignore
 data.db
+info.db
 
 # Runtime data
 pids
