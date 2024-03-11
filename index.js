@@ -165,7 +165,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Добавление новой заметки
-app.post('/api/add/note', upload.single('attachment'), (req, res) => {
+app.post('/api/add/note', upload.single('attachment'), isAuthenticated, (req, res) => {
   const { guid, note } = req.body;
   const attachment = req.file ? req.file.path : null; // Получаем путь к загруженному изображению
 
